@@ -1,5 +1,6 @@
 <template>
   <div class="login-container">
+
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
@@ -106,6 +107,7 @@ export default {
       })
     },
     handleLogin() {
+      //验证表单里的（账户密码）是否符合规则
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
@@ -180,8 +182,9 @@ $light_gray:#eee;
 .login-container {
   min-height: 100%;
   width: 100%;
-  background-color: $bg;
   overflow: hidden;
+  background: url(~@/assets/1.jpg);
+  background-size: 100% 100%;
 
   .login-form {
     position: relative;
