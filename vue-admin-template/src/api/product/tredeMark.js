@@ -12,7 +12,7 @@ export const reqTradeMarkList = (page, limit) => request({ url: `/admin/product/
 //修改品牌 /admin/product/baseTrademark/update   put   携带三个参数：id、品牌名称、品牌logo
 //切记：对于修改某一个品牌的操作，前端携带的参数需要带上id，你需要告诉服务器修改的是哪一个品牌
 
-export const reqOrUpdateTradeMark=(tradeMark)=>{
+export const reqAddOrUpdateTradeMark=(tradeMark)=>{
    //带给服务器数据携带ID  ---修改
    if(tradeMark.id){
     return request({url: '/admin/product/baseTrademark/update ',method:'put',data:tradeMark});

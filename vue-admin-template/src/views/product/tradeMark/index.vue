@@ -29,20 +29,8 @@
       </el-table-column>
       <el-table-column prop="prop" label="操作" width="width">
         <template slot-scope="{ row, $index }">
-          <el-button
-            type="waring"
-            icon="el-icon-edit"
-            size="mini"
-            @click="updateTrandeMark(row)"
-            >修改</el-button
-          >
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            size="mini"
-            @click="deleteTrandeMark(row)"
-            >删除</el-button
-          >
+          <el-button type="warning" icon="el-icon-edit" size="mini" @click="updateTradeMark(row)" >修改</el-button>
+          <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteTrandeMark(row)" >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -71,7 +59,7 @@
       :title="tmForm.id ? '修改品牌' : '添加品牌'"
       :visible.sync="dialogFormVisible"
     >
-      <el-form :model="tmForm" style="width: 80%" :rules="rules" ref="ruleFrom">
+      <el-form :model="tmForm" style="width: 80%" :rules="rules" ref="ruleForm">
         <!-- form表单 :model属性，这个属性的作用是,把表单的数据收集到那个对象的身上 ，将来表单验证，也需要这个属性-->
         <el-form-item label="品牌名称" label-width="100px" prop="tmName">
           <el-input autocomplete="off" v-model="tmForm.tmName"></el-input>
@@ -186,15 +174,16 @@ export default {
       this.tmForm = { tmName: "", logoUrl: "" };
     },
     //修改某一个品牌
-    updateTradeMark(row) {
-      //row：当前用户选中这个品牌信息
-      //显示对话框
-      this.dialogFormVisible = true;
-      //将已有的品牌信息赋值给tmForm进行展示
-      //将服务器返回品牌的信息，直接赋值给了tmForm进行展示。
-      //也就是tmForm存储即为服务器返回品牌信息
-      this.tmForm = { ...row };
-    },
+     //修改某一个品牌
+     updateTradeMark(row) {
+        //row：当前用户选中这个品牌信息
+        //显示对话框
+        this.dialogFormVisible = true;
+        //将已有的品牌信息赋值给tmForm进行展示
+        //将服务器返回品牌的信息，直接赋值给了tmForm进行展示。
+        //也就是tmForm存储即为服务器返回品牌信息
+        this.tmForm = { ...row };
+      },
     //图片上传成功
     handleAvatarSuccess(res, file) {
       //res：上传成功之后返回前端数据
@@ -205,19 +194,21 @@ export default {
     //图片上传之前
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
-      const list2M = filr.size / 1024 / 1024 < 2;
-      if (isJPG) {
-        this.$message.error("上传头像图片只能是JPG格式");
-      }
-      if (list2M) {
-        this.$message.error("上传头像图片大小不能超过2MB!");
-      }
+      const list2M = file.size / 1024 / 1024 < 2;
+      console.log("isJPG, list2M", isJPG, list2M)
+      // if (isJPG) {
+      //   this.$message.error("上传头像图片只能是JPG格式");
+      // }
+      // if (list2M) {
+      //   this.$message.error("上传头像图片大小不能超过2MB!");
+      // }
       return isJPG && list2M;
     },
    
    //添加按钮（添加品牌|修改品牌）
    addOrUpdateTradeMark() {
       //当全部验证字段通过，再去书写业务逻辑
+      console.log("this.$refs.ruleForm", this.$refs.ruleForm)
       this.$refs.ruleForm.validate(async (success) => {
         //如果全部字段符合条件
         if (success) {
