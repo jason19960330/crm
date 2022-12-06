@@ -12,8 +12,22 @@
         <el-table-column prop="attrName" label="属性名称" width="150">
         </el-table-column>
         <el-table-column prop="prop" label="属性值列表" width="width">
+          <template slot-scope="{row,$index}">
+            <el-tag type="success" v-for="(attrValue,index) in row.attrValueList" :key="attrValue.id" style="margin: 20px 0;">{{attrValue.valueName}}}</el-tag>
+          </template>
         </el-table-column>
         <el-table-column prop="prop" label="操作" width="150">  
+          <template slot-scope="{row,$index}">
+            <el-button type="warning"
+            icon="el-icon-edit"
+            size="mini"
+            ></el-button>
+            <el-button
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            ></el-button>
+          </template>
         </el-table-column>
       </el-table>
     </el-card>
