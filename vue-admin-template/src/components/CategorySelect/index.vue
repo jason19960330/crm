@@ -30,7 +30,7 @@
 <script>
 export default {
   name: "CategorySelect",
-
+  props:["show"],
   data(){
     return{
         //一级分类的数据
@@ -52,6 +52,7 @@ export default {
   mounted(){
     this.getCategory1List();
   },
+  
   methods:{
     //获取一级分类数据的方法
     async getCategory1List(){
@@ -84,7 +85,7 @@ export default {
       this.cForm.category3Id="";
       //解构二级分类的id
        const{category2Id}=this.cForm;
-       this.$emit("getCategory2Id",{category2Id,level:2});
+       this.$emit("getCategoryId",{categoryId:category2Id,level:2});
        //通过二节分类的id ,获取三级分类的数据
        let result=await this.$API.attr.reqCategory3List(category2Id);
        if(result.code===200){
