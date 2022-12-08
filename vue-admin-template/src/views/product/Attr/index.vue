@@ -5,7 +5,7 @@
     </el-card>
     <el-card>
       <div v-show="isShowTable">
-        <el-button type="primary" icon="el-icon-plus" :disabled="!category3Id" @click="isShowTable=false">添加属性</el-button>
+        <el-button type="primary" icon="el-icon-plus" :disabled="!category3Id" @click="addAttr">添加属性</el-button>
 
       <el-table style="width: 100%" border :data="attrList">
         <el-table-column type="index" label="序号" width="80" align="center">
@@ -19,10 +19,11 @@
         </el-table-column>
         <el-table-column prop="prop" label="操作" width="150">  
           <template slot-scope="{row,$index}">
-            <el-button type="warning"
+            <el-button 
+            type="warning"
             icon="el-icon-edit"
             size="mini"
-      
+            @click="updateAttr(row)"
             ></el-button>
             <el-button
             type="danger"
@@ -40,7 +41,11 @@
               <el-input placeholder="请输入属性名" v-model="attrInfo.attrName"></el-input>
             </el-form-item>
           </el-form>
-         <el-button type="primary" icon="el-icon-plus"  @click="addAttrValue" :disabled="!attrInfo.attrName">添加属性</el-button>
+         <el-button type="primary" 
+         icon="el-icon-plus"  
+         @click="addAttrValue"
+          :disabled="!attrInfo.attrName"
+          >添加属性</el-button>
          <el-button @click="isShowTable=true">取消</el-button>
          <el-table style="width:100% ;margin:20px 0px"  border :data="attrInfo.attrValueList">
           <el-table-column 
@@ -75,7 +80,9 @@
   </div>
   </template>
   <script>
+     import cloneDeep from "lodash/cloneDeep";
   export default{
+   
   name:'Attr',
   data() {
     return {
@@ -145,13 +152,43 @@
        });
       //flag属性：给每一个属性值添加一个标记flag，用户切换查看模式与编辑模式，好处，每一个属性值可以控制自己的模式切换
       //当前flag属性，响应式数据（数据变化视图跟着变化）
-    //   this.$nextTick(()=>{
-    //     this.$refs[this.attrInfo.addAttrValueList.length-1].focus();
+    //  this.$nextTick(()=>{
+    //      this.$refs[this.attrInfo.addAttrValueList.length-1].focus();
     //   });
-    }
-  
-  }
+     },
+    //添加属按钮回调
+    addAttr(){
+      //切换table打显示与隐藏
+      this.isShowTable=false;
+      //清楚数据
+     //收集三级分类的id
+     this.attrInfo={
+      attrName:"",//属性名
+      attrValueList:[
+        //属性值，因为属性值可以有多个因此用数组，每一个属性值都是一个对象需要attrId，valueName
+      ],
+      categoryId:this.category3Id,//三级分类的id
+      categoryLevel:3,
+     }
+  },
+  //修改某一属性
+  updateAttr(){
+    //isShowTable变为false
+    this.isShowTable=false;
+    //将选中的属性赋值给attrInfo
+      //由于数据结构当中存在对象里面套数组，数组里面有套对象，因此需要使用深拷贝解决这类问题
+      //深拷贝，浅拷贝在面试的时候出现频率很高，切记达到手写深拷贝与浅拷贝
+      this.attrInfo=cloneDeep(row);
+       //在修改某一个属性的时候，将相应的属性值元素添加上flag这个标记
+       this.attrInfo.attrValueList.forEach((item) => {
+        //这样书写也可以给属性值添加flag自动，但是会发现视图不会跟着变化（因为flag不是响应式数据）
+        //因为Vue无法探测普通的新增 property,这样书写的属性并非响应式属性（数据变化视图跟这边）
+        //第一个参数:对象  第二个参数:添加新的响应式属性  第三参数：新的属性的属性值
+        this.$set(item,"flag",false);
+       });
+  },
 }
+  }
   </script>
   
   <style>
