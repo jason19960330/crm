@@ -53,11 +53,9 @@
                 <el-button type="danger" icon="el-icon-delete" size="mini" slot="reference"></el-button>
               </el-popconfirm>
             </template>
-
           </el-table-column>
-
         </el-table>
-        <el-button type="primary">保存</el-button>
+        <el-button type="primary" @click="addOrUpdateAttr" :disabled="attrInfo.attrValueList.length<1">保存</el-button>
         <el-button @click="isShowTable=true">取消</el-button>
       </div>
     </el-card>
@@ -210,6 +208,30 @@
     deleteAttrValue(index){
       //当前删除属性值的操作是不需要发请求的
       this.attrInfo.attrValueList.splice(index,1)
+    },
+    //保存按钮：进行添加属性或者修改属性的操作
+   async addOrUpdateAttr(){
+     //整理参数:1,如果用户添加很多属性值，且属性值为空的不应该提交给服务器
+      //提交给服务器数据当中不应该出现flag字段
+      this.attrInfo.attrValueList= this.attrInfo.attrValueList.filter(item=>{
+        //过滤掉属性值是不是空的
+        if(item.valueName!=''){
+          delete item.flag;
+          return true;
+        }
+      });
+      try{
+      //发送请求
+      await this.$API.attr.reqAddOrUpdateAttr(this.attrInfo);
+      //展示平台属性的信号量进行切换
+      this.isShowTable=true;
+      //提示消失
+      this.$message({type:'success',message:'保存成功'});
+      //保存成功以后需要再次向平台进行属性展示
+      this.getAttrList();
+    }catch (error) {
+        // this.$message('保存失败')
+      }
     }
 
     }
