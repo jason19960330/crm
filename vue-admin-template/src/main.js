@@ -42,6 +42,8 @@ import CategorySelect from '@/components/CategorySelect';
 Vue.prototype.$API =API;
 //注册全局组件
 Vue.component( CategorySelect.name, CategorySelect);
+import Hintbutton from '@/components/HintButton';
+Vue.component(Hintbutton.name,Hintbutton);
 
 new Vue({
   el: '#app',
