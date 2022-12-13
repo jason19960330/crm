@@ -5,8 +5,11 @@
       <CategorySelect @getCategoryId="getCategoryId" :show="!show"></CategorySelect>
     </el-card>
     <el-card>
+
+      <div v-show="scene == 0">
       <!-- 添加SPU的按钮 -->
-      <el-button type="primary" icon="el-icon-plus"> 添加spu</el-button>
+
+      <el-button type="primary" icon="el-icon-plus" :disabled="!category3Id" @click="addSpu"> 添加spu</el-button>
       <el-table style="width: 100%" border :data="records">
         <el-table-column type="index" label="序号" width="80" align="center">
 
@@ -17,12 +20,12 @@
           <template slot-scope="{row,$index}">
             <!-- 未来会更换 -->
            <hint-button type="success" icon="el-icon-plus" size="mini" title="添加sku"></hint-button>
-           <hint-button type="warning" icon="el-icon-edit" size="mini" title="修改sku"></hint-button>
+           <hint-button type="warning" icon="el-icon-edit" size="mini" title="修改sku" @click="updateSpu(row)"></hint-button>
            <hint-button type="info" icon="el-icon-info" size="mini" title="查看当前spu全部sku列表"></hint-button>
            <hint-button type="danger" icon="el-icon-delete" size="mini" title="删除spu"></hint-button>
           </template>
         </el-table-column>
-
+        
       </el-table>
       <!--  @current-change="getSpuList"
           -->
@@ -37,11 +40,18 @@
           :total="total">
 
       </el-pagination>
+      </div>
+       <SpuForm v-show="scene==1">1</SpuForm>
+       <SkuForm v-show="scene==2">2</SkuForm>
+
     </el-card>
   </div>
 </template>
 
 <script>
+  //引入子组件
+import SpuForm from "./SpuForm";
+import SkuForm from "./SkuForm";
   export default {
     name: 'Spu',
     data() {
@@ -56,6 +66,7 @@
        limit: 3, //每一页需要展示多少条数据
        records: [], //spu列表的数据
        total:0,//分页器一共需要展示数据的条数
+       scene: 0, //0代表展示SPU列表数据   1 添加SPU|修改SPU   2 添加SKU
       }
     },
     methods: {
@@ -100,7 +111,28 @@
         //再发请求
         this.getSpuList();
       },
+      //添加SPU按钮的回调
+      addSpu(){
+      //切换场景为1
+      this.scene=1;
+      //通知子组件SpuFom发请求----两个
+      this.$refs.spu.addSpuData(this.category3Id);
+
+      },
+      //修改一个SPU
+      updateSpu(){
+        this.scene=1;
+        //获取子组件Spufrom 子组件
+        //在父组件中可以通过$refs获取子组件等等
+        this.$refs.spu.initSpuData(row);
+        },
+
     },
+
+    components: {
+    SpuForm,
+    SkuForm,
+  },
   }
 </script>
 
