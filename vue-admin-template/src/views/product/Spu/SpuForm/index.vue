@@ -46,7 +46,7 @@
      </el-form-item>
       <el-form-item >
          <el-button type="primary">保存</el-button>
-         <el-button>取消</el-button>
+         <el-button @click="$emit('changeSence',0)">取消</el-button>
       </el-form-item>
     </el-form>
   </div>

@@ -41,7 +41,7 @@
 
       </el-pagination>
       </div>
-       <SpuForm v-show="scene==1">1</SpuForm>
+       <SpuForm v-show="scene==1" @changeSence="changeSence" ref="spu"></SpuForm>
        <SkuForm v-show="scene==2">2</SkuForm>
 
     </el-card>
@@ -119,12 +119,20 @@ import SkuForm from "./SkuForm";
       this.$refs.spu.addSpuData(this.category3Id);
 
       },
-      //修改一个SPU
-      updateSpu(){
-        this.scene=1;
-        //获取子组件Spufrom 子组件
-        //在父组件中可以通过$refs获取子组件等等
-        this.$refs.spu.initSpuData(row);
+     //修改某一个SPU
+    updateSpu(row) {
+      this.scene = 1;
+      //获取子组件SpuForm子组件的
+      //在父组件当中可以通过$ref获取子组件等等
+      this.$refs.spu.initSpuData(row);
+    },
+        //自定义回调事件（spufrom）
+        changeSence(scene){
+           //flag这个场景为了分区保存按钮是添加还是修改
+           //切换结构（场景）
+           this.scene=scene;
+         
+
         },
 
     },
