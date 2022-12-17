@@ -38,15 +38,31 @@
         </el-upload>
       </el-form-item>
       <el-form-item label="销售属性">
-        <el-select>
-          <el-option label="lable" value="value"></el-option>
+        <el-select placeholder="`还有${unSelectSaleAttr.length}未选择`" >
+          <el-option></el-option>
         </el-select>
         <el-button type="primary" icon="el-icon-plus"> 添加销售属性</el-button>
-        <el-table style="width: 100%" border>
+        <!-- 展示的是当前SPU属于自己的销售属性 -->
+        <el-table style="width: 100%" border :data="spu.spuSaleAttrList">
           <el-table-column type="index" label="序号" width="80px" align="center"></el-table-column>
-          <el-table-column label="属性名" prop="prop" width="width"></el-table-column>
-          <el-table-column label="属性值名称列表" prop="prop" width="width"></el-table-column>
-          <el-table-column label="操作" prop="prop" width="width"></el-table-column>
+          <el-table-column label="属性名" prop="saleAttrName" width="width"></el-table-column>
+          <el-table-column label="属性值名称列表" prop="prop" width="width">
+            <template slot-scope="{row,$index}">
+              <!-- @close="handleClose(tag)" -->
+              <el-tag :key="tag.id" v-for="tag in dynamicTags" closable :disable-transitions="false" >{{tag.saleAttrValueName}}</el-tag>
+              <!-- 底下的解构可以当中咱们当年的span与input切换 -->
+              <!--  @keyup.enter.native="handleInputConfirm"  -->
+             <el-input class="input-new-tag" v-if="row.inputVisible" v-model="row.inputValue" ref="saveTagInput" size="small" ></el-input>
+             <!-- @click="showInput" -->
+             <el-button v-else class="button-new-tag" size="small" >+ 添加</el-button>
+
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" prop="prop" width="width">
+            <template slot-scope="{row,$index}">
+              <el-button type="danger" icon="el-icon-delete" size="mini "></el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-form-item>
       <el-form-item>
@@ -108,6 +124,7 @@
         TradeMarkList: [],//存储品牌信息
         SpuImageList:[],//存储SPU图片的数据
         saleAttrList: [], //销售属性的数据（项目全部的销售属性）
+        attrIdAndAttrName: "", //收集未选择的销售属性的id-----
       }
     },
     methods: {
@@ -136,13 +153,7 @@
         let spuImageResult = await this.$API.spu.reqSpuImageList(spu.id);
         if (spuImageResult.code == 200) {
           let listArr = spuImageResult.data;
-        }
-
-        //获取平台全部的销售属性
-      let saleResult = await this.$API.spu.reqBaseSaleAttrList();
-      if (saleResult.code == 200) {
-        let listArr = spuImageResult.data;
-        //由于照片墙显示图片的数据需要数组，数组里面的元素需要有name与url字段
+          //由于照片墙显示图片的数据需要数组，数组里面的元素需要有name与url字段
         //需要把服务器返回的数据进行修改
         listArr.forEach((item) => {
           item.name = item.imgName;
@@ -150,12 +161,46 @@
         });
         //把整理好的数据赋值给
         this.spuImageList = listArr;
+        }
+
+       //获取平台全部的销售属性
+       let saleResult = await this.$API.spu.reqBaseSaleAttrList();
+      if (saleResult.code == 200) {
+        this.saleAttrList = saleResult.data;
       }
       }
+    },
+    computed:{
+      unSelectSaleAttr() {
+      //整个平台的销售属性一共三个：尺寸、颜色、版本 ----saleAttrList
+      //当前SPU拥有的属于自己的销售属性SPU.spuSaleAttrList  ----颜色
+      //数组的过滤方法，可以从已有的数组当中过滤出用户需要的元素，并未返回一个新的数据
+      let result =this.spuSaleAttrList.filter((item1)=>{
+         //every数组的方法，会返回一个布尔值【真，假的】
+         return this.spu.spuSaleAttrList.every((item1)=>{
+           return item.name !=item1.saleAttrName;
+         });    
+      });
+      return result; 
     }
+  }
   }
 </script>
 
-<style scoped>
-
+<style>
+ .el-tag + .el-tag {
+    margin-left: 10px;
+  }
+  .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
+  }
 </style>
