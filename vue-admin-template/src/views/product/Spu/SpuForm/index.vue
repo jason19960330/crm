@@ -29,7 +29,7 @@
          list-type="picture-card"
           :on-preview="handlePictureCardPreview" 
           :on-remove="handleRemove" 
-          
+          :on-success="handlerSuccess"
           :file-list="spuImageList">
           <i class="el-icon-plus"></i>
           <el-dialog :visible.sync="dialogVisible">
@@ -134,10 +134,19 @@
     },
     methods: {
       handleRemove(file, fileList) {
-        console.log(file, fileList);
+         //file参数:代表的是删除的那个张图片
+      //fileList:照片墙删除某一张图片以后，剩余的其他的图片
+      // console.log(file, fileList,22222);
+      //收集照片墙图片的数据
+      //对于已有的图片【照片钱中显示的图片：有name、url字段的】，因为照片墙显示数据务必要有这两个属性
+      //对于服务器而言，不需要name、url字段，将来对于有的图片的数据在提交给服务器的时候，需要处理的
+      this.spuImageList = fileList;
       },
+      //照片墙图片预览的回调
       handlePictureCardPreview(file) {
+        //将图片地址赋值给这个属性
         this.dialogImageUrl = file.url;
+        //对话框显示
         this.dialogVisible = true;
       },
       //初始化SpuForm数据
@@ -173,7 +182,12 @@
       if (saleResult.code == 200) {
         this.saleAttrList = saleResult.data;
       }
-      }
+      },
+      //照片墙图片上传成功的回调
+    handlerSuccess(response, file, fileList) {
+      //收集图片的信息
+      this.spuImageList = fileList;
+    },
     },
     computed:{
       unSelectSaleAttr() {
