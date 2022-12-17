@@ -38,10 +38,15 @@
         </el-upload>
       </el-form-item>
       <el-form-item label="销售属性">
-        <el-select placeholder="`还有${unSelectSaleAttr.length}未选择`" >
-          <el-option></el-option>
+        <el-select :placeholder="`还有${unSelectSaleAttr.length}未选择`" v-model="attrId">
+          <el-option
+            :label="unselect.name"
+            :value="`${unselect.id}:${unselect.name}`"
+            v-for="(unselect, index) in unSelectSaleAttr"
+            :key="unselect.id"
+          ></el-option>
         </el-select>
-        <el-button type="primary" icon="el-icon-plus"> 添加销售属性</el-button>
+        <el-button type="primary" icon="el-icon-plus" :disabled="!attrId"> 添加销售属性</el-button>
         <!-- 展示的是当前SPU属于自己的销售属性 -->
         <el-table style="width: 100%" border :data="spu.spuSaleAttrList">
           <el-table-column type="index" label="序号" width="80px" align="center"></el-table-column>
@@ -124,7 +129,7 @@
         TradeMarkList: [],//存储品牌信息
         SpuImageList:[],//存储SPU图片的数据
         saleAttrList: [], //销售属性的数据（项目全部的销售属性）
-        attrIdAndAttrName: "", //收集未选择的销售属性的id-----
+        attrId: "", //收集未选择的销售属性的id-----
       }
     },
     methods: {
@@ -175,7 +180,7 @@
       //整个平台的销售属性一共三个：尺寸、颜色、版本 ----saleAttrList
       //当前SPU拥有的属于自己的销售属性SPU.spuSaleAttrList  ----颜色
       //数组的过滤方法，可以从已有的数组当中过滤出用户需要的元素，并未返回一个新的数据
-      let result =this.spuSaleAttrList.filter((item1)=>{
+      let result =this.saleAttrList.filter((item)=>{
          //every数组的方法，会返回一个布尔值【真，假的】
          return this.spu.spuSaleAttrList.every((item1)=>{
            return item.name !=item1.saleAttrName;
