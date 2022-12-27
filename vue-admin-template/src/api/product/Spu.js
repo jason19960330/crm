@@ -22,7 +22,7 @@ export const reqSpuImageList=(spuId)=>request({url:`/admin/product/spuImageList/
 export const reqBaseSaleAttrList = () => request({ url: '/admin/product/baseSaleAttrList', method: 'get' });
 
 //修改SPU||添加SPU：对于修改或者添加，携带给服务器参数大致一样的，唯一的区别就是携带的参数是否带id
-export const reqAddorUpdateSpu=(spuInfo)=>{
+export const reqAddOrUpdateSpu=(spuInfo)=>{
   //携带的参数带有id---修改spu
   if(spuInfo.id){
     return request({ url: '/admin/product/updateSpuInfo', method: 'post', data: spuInfo });

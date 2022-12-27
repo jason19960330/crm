@@ -1,4 +1,5 @@
 <template>
+  
   <div>
     <!-- 三级联动全局组件 -->
     <el-card style="margin: 20px 0px">
@@ -41,7 +42,7 @@
 
       </el-pagination>
       </div>
-       <SpuForm v-show="scene==1" @changeSence="changeSence" ref="spu"></SpuForm>
+       <SpuForm v-show="scene==1" @changeScene="changeScene" ref="spu"></SpuForm>
        <SkuForm v-show="scene==2">2</SkuForm>
 
     </el-card>
@@ -127,17 +128,18 @@ import SkuForm from "./SkuForm";
       this.$refs.spu.initSpuData(row);
     },
  //自定义回调事件（spufrom）
-     changeSence(scene,flag){
-    //flag这个场景为了分区保存按钮是添加还是修改
-    //切换结构（场景）
-    this.scene=scene;
-    //子组件通知父组件切换场景，需要再次获取SPU列表的数据进行展示
-    if(flag=="修改"){
-    this.getSpuList(this.page);
-  } else{
-    this.getSpuList()
-  }
-     },
+   //自定义事件回调（SpuForm）
+   changeScene({ scene, flag }) {
+      //flag这个形参为了区分保存按钮是添加还是修改
+      //切换结构（场景）
+      this.scene = scene;
+      //子组件通知父组件切换场景，需要再次获取SPU列表的数据进行展示
+      if (flag == "修改") {
+        this.getSpuList(this.page);
+      } else {
+        this.getSpuList();
+      }
+    },
 
     },
 
