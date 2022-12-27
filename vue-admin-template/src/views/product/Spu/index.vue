@@ -2,7 +2,7 @@
   <div>
     <!-- 三级联动全局组件 -->
     <el-card style="margin: 20px 0px">
-      <CategorySelect @getCategoryId="getCategoryId" :show="!show"></CategorySelect>
+      <CategorySelect @getCategoryId="getCategoryId" :show="scene != 0"></CategorySelect>
     </el-card>
     <el-card>
 
@@ -61,7 +61,7 @@ import SkuForm from "./SkuForm";
         category2Id: "",
         category3Id: "",
         //控制级联动菜单
-        show: true,
+        
         page: 1, //分页器当前第几页
        limit: 3, //每一页需要展示多少条数据
        records: [], //spu列表的数据
@@ -126,14 +126,18 @@ import SkuForm from "./SkuForm";
       //在父组件当中可以通过$ref获取子组件等等
       this.$refs.spu.initSpuData(row);
     },
-        //自定义回调事件（spufrom）
-        changeSence(scene){
-           //flag这个场景为了分区保存按钮是添加还是修改
-           //切换结构（场景）
-           this.scene=scene;
-         
-
-        },
+ //自定义回调事件（spufrom）
+     changeSence(scene,flag){
+    //flag这个场景为了分区保存按钮是添加还是修改
+    //切换结构（场景）
+    this.scene=scene;
+    //子组件通知父组件切换场景，需要再次获取SPU列表的数据进行展示
+    if(flag=="修改"){
+    this.getSpuList(this.page);
+  } else{
+    this.getSpuList()
+  }
+     },
 
     },
 
