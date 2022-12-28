@@ -23,7 +23,19 @@
            <hint-button type="success" icon="el-icon-plus" size="mini" title="添加sku"></hint-button>
            <hint-button type="warning" icon="el-icon-edit" size="mini" title="修改sku" @click="updateSpu(row)"></hint-button>
            <hint-button type="info" icon="el-icon-info" size="mini" title="查看当前spu全部sku列表"></hint-button>
-           <hint-button type="danger" icon="el-icon-delete" size="mini" title="删除spu"></hint-button>
+           <!-- 删除按钮的回调 -->
+           <el-popconfirm
+           title="这是一段内容确定删除吗？"
+           @onConfirm="deleteSpu(row)"
+         >
+           <hint-button
+             type="danger"
+             icon="el-icon-delete"
+             size="mini"
+             title="删除spu"
+             slot="reference"
+           ></hint-button>
+         </el-popconfirm>
           </template>
         </el-table-column>
         
@@ -138,6 +150,15 @@ import SkuForm from "./SkuForm";
         this.getSpuList(this.page);
       } else {
         this.getSpuList();
+      }
+    },
+    //删除SPU的回调
+    async deleteSpu(row){
+      let result=await this.$API.spu.reqDeleteSpu(row.id);
+      if(result.code==200){
+        this.$message({type:"success",message:"删除成功"});
+        //代表SPU个数大于1删除的时候停留在当前页，如果SPU个数小于1 回到上一页
+        this.getSpuList(this.records.length>1?this.page:this.page-1);
       }
     },
 
